@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://restaurant-website-d-x1y1.bolt.host/sitemap.xml
