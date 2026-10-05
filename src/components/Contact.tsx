@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { submitReservation } from '@/data';
 import { useReveal } from '@/useReveal';
-import { Phone, MapPin, Clock, Navigation, Send, CheckCircle } from 'lucide-react';
+import { Phone, MapPin, Clock, Navigation, Send, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function Contact() {
   const { ref, visible } = useReveal();
-  const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [form, setForm] = useState({
     name: '',
     phone: '',
@@ -13,11 +15,28 @@ export default function Contact() {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 5000);
-    setForm({ name: '', phone: '', date: '', guests: '2', message: '' });
+    setSubmitting(true);
+    setStatus('idle');
+
+    const success = await submitReservation({
+      name: form.name,
+      phone: form.phone,
+      reservation_date: form.date || null,
+      guests: form.guests,
+      message: form.message,
+    });
+
+    if (success) {
+      setStatus('success');
+      setForm({ name: '', phone: '', date: '', guests: '2', message: '' });
+      setTimeout(() => setStatus('idle'), 6000);
+    } else {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 6000);
+    }
+    setSubmitting(false);
   };
 
   const inputClass =
@@ -109,11 +128,20 @@ export default function Contact() {
               onSubmit={handleSubmit}
               className="bg-stone-800 rounded-2xl p-8 border border-stone-700"
             >
-              {submitted && (
+              {status === 'success' && (
                 <div className="mb-6 flex items-center gap-3 bg-success-500/15 border border-success-500/30 rounded-lg px-4 py-3 animate-fade-in">
-                  <CheckCircle size={20} className="text-success-500" />
+                  <CheckCircle size={20} className="text-success-500 shrink-0" />
                   <span className="text-sm text-success-500">
                     Merci ! Votre demande de réservation a bien été envoyée. Nous vous contacterons rapidement.
+                  </span>
+                </div>
+              )}
+
+              {status === 'error' && (
+                <div className="mb-6 flex items-center gap-3 bg-error-500/15 border border-error-500/30 rounded-lg px-4 py-3 animate-fade-in">
+                  <AlertCircle size={20} className="text-error-500 shrink-0" />
+                  <span className="text-sm text-error-500">
+                    Une erreur est survenue. Veuillez réessayer ou nous appeler directement au 077 03 74 13.
                   </span>
                 </div>
               )}
@@ -181,10 +209,20 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="mt-6 w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 text-white font-medium px-6 py-4 rounded-lg transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary-500/30"
+                disabled={submitting}
+                className="mt-6 w-full flex items-center justify-center gap-2 bg-primary-500 hover:bg-primary-600 disabled:opacity-60 disabled:cursor-not-allowed text-white font-medium px-6 py-4 rounded-lg transition-all hover:scale-[1.01] hover:shadow-lg hover:shadow-primary-500/30"
               >
-                <Send size={18} />
-                Envoyer ma demande
+                {submitting ? (
+                  <>
+                    <Loader2 size={18} className="animate-spin" />
+                    Envoi en cours...
+                  </>
+                ) : (
+                  <>
+                    <Send size={18} />
+                    Envoyer ma demande
+                  </>
+                )}
               </button>
             </form>
           </div>

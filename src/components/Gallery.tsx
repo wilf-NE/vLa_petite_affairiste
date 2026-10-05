@@ -1,9 +1,19 @@
-import { galleryImages } from '@/data';
+import { useEffect, useState } from 'react';
+import { fetchGalleryImages, type GalleryImage } from '@/data';
 import { useReveal } from '@/useReveal';
-import { Camera } from 'lucide-react';
+import { Camera, Loader2 } from 'lucide-react';
 
 export default function Gallery() {
   const { ref, visible } = useReveal();
+  const [images, setImages] = useState<GalleryImage[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchGalleryImages().then((imgs) => {
+      setImages(imgs);
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <section id="galerie" className="py-24 lg:py-32 bg-stone-50">
@@ -21,33 +31,37 @@ export default function Gallery() {
           </p>
         </div>
 
-        {/* Grid */}
-        <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[200px] lg:auto-rows-[240px]">
-          {galleryImages.map((img, idx) => {
-            const big = idx === 0 || idx === 5;
-            return (
-              <div
-                key={idx}
-                className={`relative overflow-hidden rounded-xl group cursor-pointer ${
-                  big ? 'col-span-2 row-span-1' : ''
-                }`}
-              >
-                <img
-                  src={img.url}
-                  alt={img.alt}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-stone-950/0 group-hover:bg-stone-950/30 transition-all duration-300 flex items-end p-4">
-                  <p className="text-white text-sm font-medium translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                    {img.alt}
-                  </p>
+        {loading ? (
+          <div className="mt-16 flex justify-center">
+            <Loader2 size={32} className="animate-spin text-primary-500" />
+          </div>
+        ) : (
+          <div className="mt-12 grid grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[200px] lg:auto-rows-[240px]">
+            {images.map((img, idx) => {
+              const big = idx === 0 || idx === 5;
+              return (
+                <div
+                  key={img.id}
+                  className={`relative overflow-hidden rounded-xl group cursor-pointer ${
+                    big ? 'col-span-2 row-span-1' : ''
+                  }`}
+                >
+                  <img
+                    src={img.url}
+                    alt={img.alt}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-stone-950/0 group-hover:bg-stone-950/30 transition-all duration-300 flex items-end p-4">
+                    <p className="text-white text-sm font-medium translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                      {img.alt}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
 
-        {/* CTA */}
         <div className="mt-10 text-center">
           <a
             href="#contact"

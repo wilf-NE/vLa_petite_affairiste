@@ -1,192 +1,114 @@
+import { supabase } from '@/supabaseClient';
+
 export interface MenuItem {
+  id: string;
   name: string;
   description: string;
   price: string;
-  tag?: string;
+  tag: string | null;
+  sort_order: number;
+  is_available: boolean;
 }
 
 export interface MenuCategory {
   id: string;
+  slug: string;
   label: string;
+  sort_order: number;
   items: MenuItem[];
 }
 
-export const menuCategories: MenuCategory[] = [
-  {
-    id: 'entrees',
-    label: 'Entrées',
-    items: [
-      {
-        name: 'Salade tropicale',
-        description: 'Mangue verte, avocat, crevettes, vinaigrette au citron vert',
-        price: '6 000 F',
-        tag: 'Signature',
-      },
-      {
-        name: 'Soupe de poisson maison',
-        description: 'Poisson frais du jour, légumes, épices douces',
-        price: '5 000 F',
-      },
-      {
-        name: 'Boulettes de boeuf',
-        description: 'Viande hachée épicée, sauce tomate, accompagnement de pain',
-        price: '5 500 F',
-      },
-      {
-        name: 'Beignets de manioc',
-        description: 'Manioc râpé frit, sauce piquante maison',
-        price: '4 000 F',
-      },
-    ],
-  },
-  {
-    id: 'plats',
-    label: 'Plats',
-    items: [
-      {
-        name: 'Poulet DG à la mode de Libreville',
-        description: 'Poulet, plantains mûrs, légumes, sauce parfumée',
-        price: '8 500 F',
-        tag: 'Signature',
-      },
-      {
-        name: 'Poisson braisé entier',
-        description: 'Poisson du jour grillé au feu de bois, sauce oignon, manioc',
-        price: '9 000 F',
-      },
-      {
-        name: 'Poulet moambé',
-        description: 'Poulet mijoté à la sauce de noix de palme, riz blanc',
-        price: '8 000 F',
-        tag: 'Tradition',
-      },
-      {
-        name: 'Crevettes sautées à l\'ail',
-        description: 'Crevettes fraîches, ail, beurre, légumes croquants',
-        price: '10 000 F',
-      },
-      {
-        name: 'Brochettes de boeuf',
-        description: 'Viande marinée, grillée, frites et salade',
-        price: '7 500 F',
-      },
-      {
-        name: 'Poulet fermier rôti',
-        description: 'Poulet entier rôti aux herbes, manioc ou frites',
-        price: '8 500 F',
-      },
-    ],
-  },
-  {
-    id: 'desserts',
-    label: 'Desserts',
-    items: [
-      {
-        name: 'Moelleux au chocolat',
-        description: 'Coeur coulant, glace vanille, éclats de cacao',
-        price: '4 500 F',
-        tag: 'Signature',
-      },
-      {
-        name: 'Tiramisu maison',
-        description: 'Mascarpone, café, biscuits imbibés, cacao',
-        price: '4 000 F',
-      },
-      {
-        name: 'Fruits frais de saison',
-        description: 'Ananas, mangue, papaye, coulis de fruit de la passion',
-        price: '3 500 F',
-      },
-      {
-        name: 'Crème brûlée à la vanille',
-        description: 'Crème onctueuse, caramel craquant',
-        price: '4 000 F',
-      },
-    ],
-  },
-  {
-    id: 'boissons',
-    label: 'Boissons',
-    items: [
-      {
-        name: 'Jus de fruit de la passion',
-        description: 'Frais, pressé du jour',
-        price: '2 500 F',
-      },
-      {
-        name: 'Jus de gingembre',
-        description: 'Gingembre frais, citron, miel',
-        price: '2 500 F',
-      },
-      {
-        name: 'Vin rouge — verre',
-        description: 'Sélection de la maison',
-        price: '3 500 F',
-      },
-      {
-        name: 'Bière locale',
-        description: 'Bien fraîche',
-        price: '2 000 F',
-      },
-      {
-        name: 'Café espresso',
-        description: 'Grains torréfiés, intense et velouté',
-        price: '1 500 F',
-      },
-    ],
-  },
-];
+export interface GalleryImage {
+  id: string;
+  url: string;
+  alt: string;
+  sort_order: number;
+}
 
-export const galleryImages = [
-  {
-    url: 'https://images.pexels.com/photos/28736731/pexels-photo-28736731.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Service de restauration avec buffet de plats',
-  },
-  {
-    url: 'https://images.pexels.com/photos/15059689/pexels-photo-15059689.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Plat de poisson gastronomique avec sauce crémeuse',
-  },
-  {
-    url: 'https://images.pexels.com/photos/37324427/pexels-photo-37324427.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Poulet frit avec plantains et frites',
-  },
-  {
-    url: 'https://images.pexels.com/photos/13869884/pexels-photo-13869884.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Intérieur chaleureux de restaurant',
-  },
-  {
-    url: 'https://images.pexels.com/photos/27588082/pexels-photo-27588082.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Poisson grillé et légumes rôtis',
-  },
-  {
-    url: 'https://images.pexels.com/photos/35546720/pexels-photo-35546720.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Dessert au chocolat dressé',
-  },
-  {
-    url: 'https://images.pexels.com/photos/12548561/pexels-photo-12548561.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Crevettes grillées avec salade de légumes frais',
-  },
-  {
-    url: 'https://images.pexels.com/photos/17942687/pexels-photo-17942687.jpeg?auto=compress&cs=tinysrgb&h=650&w=940',
-    alt: 'Chef en train de préparer un repas',
-  },
-];
+export interface Review {
+  id: string;
+  author_name: string;
+  author_initials: string;
+  rating: number;
+  content: string;
+  cuisine_score: number | null;
+  service_score: number | null;
+  reviewed_at: string;
+}
 
-export const reviews = [
-  {
-    name: 'Seïdou',
-    initials: 'S',
-    rating: 5,
-    date: 'il y a 2 jours',
-    text: 'Excellent accueil, plats savoureux et service impeccable. Une adresse à découvrir absolument à Libreville !',
-  },
-  {
-    name: 'Heinrich N. (SPIRITUEL)',
-    initials: 'HN',
-    rating: 5,
-    date: 'il y a 2 semaines',
-    text: 'Cuisine au top, service de qualité. Je recommande vivement La Petite Affairiste pour un repas en famille ou entre amis.',
-    cuisine: 5,
-    service: 5,
-  },
-];
+export interface Reservation {
+  name: string;
+  phone: string;
+  reservation_date: string | null;
+  guests: string;
+  message: string;
+}
+
+export async function fetchMenuCategories(): Promise<MenuCategory[]> {
+  const { data: categories, error: catError } = await supabase
+    .from('menu_categories')
+    .select('id, slug, label, sort_order')
+    .order('sort_order');
+
+  if (catError || !categories) return [];
+
+  const { data: items, error: itemError } = await supabase
+    .from('menu_items')
+    .select('id, category_id, name, description, price, tag, sort_order, is_available')
+    .eq('is_available', true)
+    .order('sort_order');
+
+  if (itemError || !items) return [];
+
+  return categories.map((cat) => ({
+    id: cat.slug,
+    slug: cat.slug,
+    label: cat.label,
+    sort_order: cat.sort_order,
+    items: items
+      .filter((item) => item.category_id === cat.id)
+      .map((item) => ({
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        price: item.price,
+        tag: item.tag,
+        sort_order: item.sort_order,
+        is_available: item.is_available,
+      })),
+  }));
+}
+
+export async function fetchGalleryImages(): Promise<GalleryImage[]> {
+  const { data, error } = await supabase
+    .from('gallery_images')
+    .select('id, url, alt, sort_order')
+    .order('sort_order');
+
+  if (error || !data) return [];
+  return data;
+}
+
+export async function fetchReviews(): Promise<Review[]> {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select('id, author_name, author_initials, rating, content, cuisine_score, service_score, reviewed_at')
+    .order('reviewed_at', { ascending: false });
+
+  if (error || !data) return [];
+  return data;
+}
+
+export async function submitReservation(reservation: Reservation): Promise<boolean> {
+  const { error } = await supabase
+    .from('reservations')
+    .insert({
+      name: reservation.name,
+      phone: reservation.phone,
+      reservation_date: reservation.reservation_date || null,
+      guests: reservation.guests,
+      message: reservation.message,
+    });
+
+  return !error;
+}
