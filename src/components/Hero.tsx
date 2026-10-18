@@ -1,4 +1,4 @@
-import { Clock, MapPin, Star, ChevronDown, UtensilsCrossed } from 'lucide-react';
+import { Clock, MapPin, Phone, Star, ChevronDown, UtensilsCrossed } from 'lucide-react';
 
 export default function Hero() {
   return (
@@ -23,16 +23,6 @@ export default function Hero() {
 
       {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        {/* Rating badge */}
-        <div className="animate-fade-in inline-flex items-center gap-2.5 glass rounded-full px-5 py-2.5 mb-8">
-          <div className="flex gap-0.5">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star key={i} size={14} className={i < 4 ? 'text-primary-300 fill-primary-300' : 'text-primary-300/40 fill-primary-300/40'} />
-            ))}
-          </div>
-          <span className="text-sm text-stone-100 font-medium tracking-wide">4,5 / 5 — Avis Google</span>
-        </div>
-
         {/* Title with refined typography */}
         <p className="animate-fade-in-delayed text-primary-300 tracking-[0.3em] uppercase text-xs sm:text-sm font-medium mb-4">
           <UtensilsCrossed size={14} className="inline mr-2 -mt-1" />
@@ -82,9 +72,24 @@ export default function Hero() {
           </div>
           <span className="hidden sm:block w-px h-4 bg-stone-600" />
           <div className="flex items-center gap-2 text-sm">
+            <Phone size={16} className="text-primary-300" />
+            <span>077 03 74 13</span>
+          </div>
+          <span className="hidden sm:block w-px h-4 bg-stone-600" />
+          <div className="flex items-center gap-2 text-sm">
             <MapPin size={16} className="text-primary-300" />
             <span>13131, Libreville</span>
           </div>
+        </div>
+
+        {/* Rating badge - moved below phone number */}
+        <div className="animate-fade-in-delayed-2 mt-6 inline-flex items-center gap-2.5 glass rounded-full px-5 py-2.5">
+          <div className="flex gap-0.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} size={14} className={i < 4 ? 'text-primary-300 fill-primary-300' : 'text-primary-300/40 fill-primary-300/40'} />
+            ))}
+          </div>
+          <span className="text-sm text-stone-100 font-medium tracking-wide">4,5 / 5 — Avis Google</span>
         </div>
       </div>
 
