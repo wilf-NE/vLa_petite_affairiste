@@ -40,8 +40,8 @@ function App() {
         <About />
         <MenuSection />
         <Gallery />
-        <Reviews />
         <Contact />
+        <Reviews />
       </main>
       <Footer />
       <ScrollToTop />
