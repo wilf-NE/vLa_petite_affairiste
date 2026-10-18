@@ -14,64 +14,74 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     font-family: var(--font-sans);
-    @apply bg-stone-50 text-stone-800 antialiased;
+    @apply bg-stone-50 text-stone-800;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4 {
     font-family: var(--font-serif);
+    line-height: 1.2;
+  }
+
+  ::selection {
+    @apply bg-primary-500/30 text-stone-900;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-stone-100;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-stone-400 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-stone-500;
   }
 }
 
 @layer components {
-  .font-serif {
-    font-family: var(--font-serif);
+  .font-serif { font-family: var(--font-serif); }
+  .font-sans { font-family: var(--font-sans); }
+
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/15;
   }
-  .font-sans {
-    font-family: var(--font-sans);
+
+  .glass-dark {
+    @apply bg-stone-950/80 backdrop-blur-md border border-white/10;
   }
 }
 
 @layer utilities {
-  .animate-fade-up {
-    animation: fadeUp 0.8s ease-out forwards;
-  }
-
-  .animate-fade-in {
-    animation: fadeIn 1s ease-out forwards;
-  }
-
-  .animate-fade-in-delayed {
-    opacity: 0;
-    animation: fadeIn 1s ease-out 0.3s forwards;
-  }
-
-  .animate-fade-in-delayed-2 {
-    opacity: 0;
-    animation: fadeIn 1s ease-out 0.6s forwards;
-  }
+  .animate-fade-up { animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+  .animate-fade-in { animation: fadeIn 1s ease-out forwards; }
+  .animate-fade-in-delayed { opacity: 0; animation: fadeIn 1s ease-out 0.3s forwards; }
+  .animate-fade-in-delayed-2 { opacity: 0; animation: fadeIn 1s ease-out 0.6s forwards; }
 
   @keyframes fadeUp {
-    from {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
   }
-
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
 
   .text-shadow-lg {
-    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  .text-shadow-sm {
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   }
 
   .bg-grain {
@@ -81,11 +91,74 @@
   .reveal {
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
   }
-
   .reveal.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal-scale.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Shimmer skeleton loading */
+  .shimmer {
+    background: linear-gradient(90deg, #eae6dd 0%, #f5f3ef 50%, #eae6dd 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  /* Dotted leader for menu items */
+  .dotted-leader {
+    flex: 1;
+    border-bottom: 1px dotted currentColor;
+    opacity: 0.3;
+    margin: 0 0.5rem 0.35rem;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal, .reveal-left, .reveal-right, .reveal-scale {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
